@@ -13,13 +13,12 @@ define([
 ) {
     'use strict';
 
-    var GeoRSSControl = declare([_WidgetBase, _TemplatedMixin, _Contained, _Control], {
-        _layerType: 'vector', // constant
-        _esriLayerType: 'georss', // constant
+    var VectorTileControl = declare([_WidgetBase, _TemplatedMixin, _Contained, _Control], {
+        _layerType: 'overlay', // constant
+        _esriLayerType: 'vectortile', // constant
         _layerTypeInit: function () {
             this._expandRemove();
-            // legend or no legend???
         }
     });
-    return GeoRSSControl;
+    return VectorTileControl;
 });

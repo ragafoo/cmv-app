@@ -6,6 +6,7 @@ define([
     'esri/tasks/GeometryService',
     'esri/layers/ImageParameters'
 ], function (units, Extent, esriConfig, /*urlUtils,*/ GeometryService, ImageParameters) {
+    'use strict';
 
     // url to your proxy page, must be on same machine hosting you app. See proxy folder for readme.
     esriConfig.defaults.io.proxyUrl = 'proxy/proxy.ashx';
@@ -27,7 +28,7 @@ define([
     //     layerIds: [0],
     //     layerOption: 'show'
     // })
-    function buildImageParameters(config) {
+    function buildImageParameters (config) {
         config = config || {};
         var ip = new ImageParameters();
         //image parameters for dynamic services, set to png32 for higher quality exports
@@ -86,10 +87,10 @@ define([
         // 3 'mode' options: MODE_SNAPSHOT = 0, MODE_ONDEMAND = 1, MODE_SELECTION = 2
         operationalLayers: [{
             type: 'feature',
-            url: 'http://services1.arcgis.com/g2TonOxuRkIqSOFx/arcgis/rest/services/MeetUpHomeTowns/FeatureServer/0',
-            title: 'STLJS Meetup Home Towns',
+            url: 'http://services1.arcgis.com/6bXbLtkf4y11TosO/arcgis/rest/services/Restaurants/FeatureServer/0',
+            title: 'Restaurants',
             options: {
-                id: 'meetupHometowns',
+                id: 'restaurants',
                 opacity: 1.0,
                 visible: true,
                 outFields: ['*'],
@@ -101,7 +102,7 @@ define([
             legendLayerInfos: {
                 exclude: false,
                 layerInfo: {
-                    title: 'My layer'
+                    title: 'Restaurants'
                 }
             }
         }, {
@@ -123,10 +124,16 @@ define([
                 id: 'louisvillePubSafety',
                 opacity: 1.0,
                 visible: true,
-                imageParameters: buildImageParameters()
+                imageParameters: buildImageParameters({
+                    layerIds: [0, 2, 4, 5, 8, 10, 12, 21],
+                    layerOption: 'show'
+                })
             },
             identifyLayerInfos: {
                 layerIds: [2, 4, 5, 8, 12, 21]
+            },
+            layerControlLayerInfos: {
+                layerIds: [0, 2, 4, 5, 8, 9, 10, 12, 21]
             },
             legendLayerInfos: {
                 layerInfo: {
@@ -151,6 +158,63 @@ define([
                 metadataUrl: true,
                 expanded: true
             }
+        /*
+        //examples of vector tile layers (beta in v3.15)
+        }, {
+            type: 'vectortile',
+            title: 'Light Gray Canvas Vector',
+            url: '//www.arcgis.com/sharing/rest/content/items/bdf1eec3fa79456c8c7c2bb62f86dade/resources/styles/root.json',
+            options: {
+                id: 'vectortile1',
+                opacity: 0.8,
+                visible: true
+            }
+        }, {
+           //  taken from this demo: https://github.com/ycabon/presentations/blob/gh-pages/2015-berlin-plenary/demos/3.15-vectortile/create-by-style-object.html
+            type: 'vectortile',
+            title: 'Custom Vector Style',
+            options: {
+                id: 'vectortile2',
+                opacity: 1.0,
+                visible: true,
+                'glyphs': '//www.arcgis.com/sharing/rest/content/items/00cd8e843bae49b3a040423e5d65416b/resources/fonts/{fontstack}/{range}.pbf',
+                'sprite': '//www.arcgis.com/sharing/rest/content/items/00cd8e843bae49b3a040423e5d65416b/resources/sprites/sprite',
+                'version': 8,
+                'sources': {
+                    'esri': {
+                        'url': '//basemapsdev.arcgis.com/arcgis/rest/services/World_Basemap/VectorTileServer',
+                        'type': 'vector'
+                    }
+                },
+                'layers': [{
+                    'id': 'background',
+                    'type': 'background',
+                    'paint': {
+                        'background-color': '#556688'
+                    }
+                }, {
+                    'id': 'Land',
+                    'type': 'fill',
+                    'source': 'esri',
+                    'source-layer': 'Land',
+                    'paint': {
+                        'fill-color': '#273344'
+                    },
+                }, {
+                    'id': 'roads',
+                    'type': 'line',
+                    'source': 'esri',
+                    'source-layer': 'Road',
+                    'layout': {
+                        'line-join': 'round'
+                    },
+                    'paint': {
+                        'line-width': 1,
+                        'line-color': '#131622'
+                    }
+                }]
+            }
+        */
         }],
         // set include:true to load. For titlePane type set position the the desired order in the sidebar
         widgets: {
@@ -164,19 +228,15 @@ define([
             },
             geocoder: {
                 include: true,
-                id: 'geocoder',
                 type: 'domNode',
-                path: 'gis/dijit/Geocoder',
-                srcNodeRef: 'geocodeDijit',
+                path: 'esri/dijit/Search',
+                srcNodeRef: 'geocoderButton',
                 options: {
                     map: true,
-                    mapRightClickMenu: true,
-                    geocoderOptions: {
-                        autoComplete: true,
-                        arcgisGeocoder: {
-                            placeholder: 'Enter an address or place'
-                        }
-                    }
+                    visible: true,
+                    enableInfoWindow: false,
+                    enableButtonMode: true,
+                    expanded: false
                 }
             },
             identify: {
@@ -433,6 +493,15 @@ define([
                 position: 9,
                 path: 'gis/dijit/StreetView',
                 title: 'Google Street View',
+                paneOptions: {
+                    resizable: true,
+                    resizeOptions: {
+                        minSize: {
+                            w: 250,
+                            h: 250
+                        }
+                    }
+                },
                 options: {
                     map: true,
                     mapClickMode: true,

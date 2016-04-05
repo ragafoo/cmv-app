@@ -3,7 +3,8 @@ define([
     'dijit/_WidgetBase',
     'dijit/_TemplatedMixin',
     'dijit/_Contained',
-    './_Control' // layer control base class
+    './_Control', // layer control base class
+    './../plugins/legendUtil'
 ], function (
     declare,
     _WidgetBase,
@@ -13,13 +14,12 @@ define([
 ) {
     'use strict';
 
-    var GeoRSSControl = declare([_WidgetBase, _TemplatedMixin, _Contained, _Control], {
+    var WFSControl = declare([_WidgetBase, _TemplatedMixin, _Contained, _Control], {
         _layerType: 'vector', // constant
-        _esriLayerType: 'georss', // constant
+        _esriLayerType: 'wfs', // constant
         _layerTypeInit: function () {
             this._expandRemove();
-            // legend or no legend???
         }
     });
-    return GeoRSSControl;
+    return WFSControl;
 });
